@@ -7,8 +7,10 @@ local cloneref = cloneref or function(x) return x end
 local decompile = decompile or function(x) return "-- Unable to get script content." end
 
 --// Services \\--
-local LogService = cloneref(game:GetService("LogService"))
+local RobloxReplicatedStorage = cloneref(game:GetService("RobloxReplicatedStorage"))
+local MarketplaceService = cloneref(game:GetService("MarketplaceService"))
 local HttpService = cloneref(game:GetService("HttpService"))
+local LogService = cloneref(game:GetService("LogService"))
 
 --// Compatibility Check \\--
 local WebSocketAvailable = (
@@ -288,8 +290,6 @@ while true do
     end)
 
     Bridge:BindToType("get-game-info", function(data)
-        local MarketplaceService = cloneref(game:GetService("MarketplaceService"))
-        local RobloxReplicatedStorage = cloneref(game:GetService("RobloxReplicatedStorage"))
         local productInfo = MarketplaceService:GetProductInfo(game.PlaceId)
         
         return {
@@ -302,7 +302,7 @@ while true do
             CreatorType = tostring(productInfo.Creator.CreatorType),
             CreatorId = productInfo.Creator.CreatorTargetId,
             JobId = game.JobId,
-            IsVIPServer = RobloxReplicatedStorage.GetServerType:InvokeServer() == "VIPServer"
+            ServerType = RobloxReplicatedStorage.GetServerType:InvokeServer()
         }
     end)
 
