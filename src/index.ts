@@ -9,22 +9,19 @@ import { z } from "zod";
 
 const WS_PORT = 16384;
 
-// Kill any existing process on the port
 function killProcessOnPort(port: number) {
   try {
-    // Get PID of process using the port (macOS/Linux)
     const pid = execSync(`lsof -ti :${port}`, { encoding: "utf-8" }).trim();
     if (pid) {
       console.error(`Killing existing process ${pid} on port ${port}...`);
       execSync(`kill -9 ${pid}`);
     }
-  } catch {
-    // No process on port, or lsof not available - that's fine
-  }
+  } catch {}
 }
 
 killProcessOnPort(WS_PORT);
 
+// MCP Server
 const server = new McpServer({
   name: "RobloxMCP",
   version: "1.0.0",
@@ -37,7 +34,7 @@ let httpClientConnected = false;
 let pendingHttpCommand: any = null;
 let httpResponseResolvers: Map<string, (data: any) => void> = new Map();
 
-// Create HTTP server for both WebSocket upgrade and HTTP polling fallback
+// HTTP server for HTTP polling fallback
 const httpServer = createServer((req: IncomingMessage, res: ServerResponse) => {
   const url = new URL(req.url || "/", `http://localhost:${WS_PORT}`);
 
