@@ -395,6 +395,7 @@ while true do
         
         local results = {}
         local limit = data.limit or 50
+        local contextLines = data.contextLines or 2
         local totalMatches = 0
 
         local count = 0
@@ -405,17 +406,34 @@ while true do
             count += 1
             if count % 250 == 0 then task.wait() end
 
-            --// Find all matching lines \\--
-            local matchingLines = {}
-            local lineNumber = 0
-            
+            --// Split source into lines \\--
+            local lines = {}
             for line in source:gmatch("[^\r\n]+") do
-                lineNumber += 1
-                
+                table.insert(lines, line)
+            end
+
+            --// Find all matching lines with context \\--
+            local matchingLines = {}
+            
+            for lineNumber, line in ipairs(lines) do
                 if line:find(data.query) then
+                    --// Get context before \\--
+                    local before = {}
+                    for i = math.max(1, lineNumber - contextLines), lineNumber - 1 do
+                        table.insert(before, { lineNumber = i, content = lines[i] })
+                    end
+                    
+                    --// Get context after \\--
+                    local after = {}
+                    for i = lineNumber + 1, math.min(#lines, lineNumber + contextLines) do
+                        table.insert(after, { lineNumber = i, content = lines[i] })
+                    end
+                    
                     table.insert(matchingLines, {
                         lineNumber = lineNumber,
-                        content = line
+                        content = line,
+                        before = before,
+                        after = after
                     })
                 end
             end
