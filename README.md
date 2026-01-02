@@ -59,7 +59,7 @@ Add this to your `claude_desktop_config.json`:
 In your Roblox executor, run the contents of `connector.luau`. You can also use this quick loader:
 
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/notpoiu/robloxmcp/main/connector.luau"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/notpoiu/roblox-mcp/refs/heads/main/connector.luau"))()
 ```
 
 _(Make sure to replace the URL with your actual hosted script or paste the file contents directly)_
