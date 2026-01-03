@@ -511,6 +511,13 @@ server.registerTool(
         )
         .optional()
         .default(2),
+      maxMatchesPerScript: z
+        .number()
+        .describe(
+          "Maximum number of matches to return per script (default: 20)"
+        )
+        .optional()
+        .default(20),
     }),
   },
   async ({ query, limit }) => {
